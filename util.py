@@ -81,7 +81,7 @@ def data_generator(fut_df, stock_df, feature='close'):
     df1_common = fut_df[fut_df['date'].isin(common_times)]
     df2_common = stock_df[stock_df['date'].isin(common_times)]
     merged_df = pd.merge(df1_common, df2_common, on='date', suffixes=('_df1', '_df2'))
-    data = merged_df[[f'{feature}_df1', f'{feature}_df2']]
+    data = merged_df[[f'{feature}_df1', f'{feature}_df2'], 'label']
     return data
 
 def significant(data):

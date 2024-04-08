@@ -71,6 +71,7 @@ all_stock['open_diff'] = all_stock['open'].diff()
 all_stock['high_diff'] = all_stock['high'].diff()
 all_stock['low_diff'] = all_stock['low'].diff()
 all_stock['close_diff'] = all_stock['close'].diff()
+all_stock['label'] = all_stock['ChangeRatio']>0
 
 
 
