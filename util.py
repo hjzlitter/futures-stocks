@@ -81,11 +81,13 @@ def data_generator(fut_df, stock_df, feature='close'):
     df1_common = fut_df[fut_df['date'].isin(common_times)]
     df2_common = stock_df[stock_df['date'].isin(common_times)]
     merged_df = pd.merge(df1_common, df2_common, on='date', suffixes=('_df1', '_df2'))
-    data = merged_df[[f'{feature}_df1', f'{feature}_df2'], 'label']
-    return data
+    data = merged_df[[f'{feature}_df1', f'{feature}_df2']]
+    label = merged_df['label']
+    return data, label
 
-def significant(data):
+def significant(data, label=None):
     p_value_list = []
+    acc_list = []
     num_days = len(data)
     window_size = 30
     for i in range(num_days - window_size + 1):
@@ -94,11 +96,20 @@ def significant(data):
         window_data = data.iloc[window_start:window_end]
         model = VAR(window_data)
         results = model.fit()
+        if not label.empty:
+            cnt = 0
+            for j in range(window_start, window_end-1):
+                forcast = results.forecast(data.values[j].reshape(1, -1), steps=1)
+                if(label[j+1]==(forcast[0][1]>0)):
+                    cnt += 1 
+            acc = cnt/window_size   
+            acc_list.append(acc)
+            # print(results.summary())
         # print(results.summary())
         p_values = results.pvalues    
         p_value_list.append(np.array(p_values.iloc[:,1]))
     significant_columns = [[i, arr] for i, arr in enumerate(p_value_list) if all(arr < 0.10)]
-    return significant_columns
+    return significant_columns, acc_list
 
 
 if __name__ == '__main__':
