@@ -67,6 +67,11 @@ nonferrous['Stkcd'] = nonferrous['Stkcd'].astype(str).str.zfill(6)
 all_stock = pd.concat([metal, coal, nonferrous], axis=0)
 all_stock.rename(columns={'Trddt': 'date', 'Opnprc': 'open','Loprc':'low', 'Hiprc':'high', 'Clsprc':'close'}, inplace=True)
 all_stock['date'] = pd.to_datetime(all_stock['date'])
+all_stock['open_diff'] = all_stock['open'].diff()
+all_stock['high_diff'] = all_stock['high'].diff()
+all_stock['low_diff'] = all_stock['low'].diff()
+all_stock['close_diff'] = all_stock['close'].diff()
+
 
 
 def fut_read(x):
@@ -74,6 +79,10 @@ def fut_read(x):
     fut['date'] = pd.to_datetime(fut['date'])
     fut['ChangeRatio'] = fut['close'].diff() / fut['close'].shift(1) 
     fut['ChangeRatio'].iloc[0] = 0
+    fut['open_diff'] = fut['open'].diff()
+    fut['high_diff'] = fut['high'].diff()
+    fut['low_diff'] = fut['low'].diff()
+    fut['close_diff'] = fut['close'].diff()
     fut = fut[fut.date>='2019-05-01']
     return fut
 

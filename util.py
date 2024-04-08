@@ -22,12 +22,14 @@ def johansen_cointegration_test(df, det_order = -1, k_ar_diff = 1):
         *  1 - linear trend
     k_ar_diff : int, number of lagged differences in the model.
     """
-    print('Results of Johansen Cointegration Test:')
+   
     result = coint_johansen(df, det_order, k_ar_diff)
-    print(f"Test statistic: {result.lr1}")
-    print(f"Critical values: {result.cvt}")
-    print(f"Eigenstatistics: {result.lr2}")
-    print(f"Eigenvalues: {result.eig}")
+    # print('Results of Johansen Cointegration Test:')
+    # print(f"Test statistic: {result.lr1}")
+    # print(f"Critical values: {result.cvt}")
+    # print(f"Eigenstatistics: {result.lr2}")
+    # print(f"Eigenvalues: {result.eig}")
+    return result
 
 # 假设你有一个名为df的Pandas DataFrame时间序列数据集，每列是一个时间序列
 # johansen_cointegration_test(df)
@@ -79,8 +81,8 @@ def significant(data):
         results = model.fit()
         # print(results.summary())
         p_values = results.pvalues    
-        p_value_list.append(np.array(p_values.iloc[:,0]))
-    significant_columns = [i for i, arr in enumerate(p_value_list) if all(arr < 0.05)]
+        p_value_list.append(np.array(p_values.iloc[:,1]))
+    significant_columns = [[i, arr] for i, arr in enumerate(p_value_list) if all(arr < 0.10)]
     return significant_columns
 
 
