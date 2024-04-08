@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from statsmodels.tsa.api import VAR
 from statsmodels.tsa.vector_ar.vecm import coint_johansen
+import statsmodels.api as sm
 
 def adf_test(timeseries):
     # print('Results of Augmented Dickey-Fuller Test:')
@@ -11,8 +12,22 @@ def adf_test(timeseries):
     dfoutput = pd.Series(dftest[0:4], index=['Test Statistic', 'p-value', '#Lags Used', 'Number of Observations Used'])
     for key, value in dftest[4].items():
         dfoutput['Critical Value (%s)' % key] = value
-    print(dfoutput)
+    # print(dfoutput)
     return dfoutput
+
+def EG(df):
+    X_t = df.iloc[:,0]
+    Y_t = df.iloc[:,1]
+    X = sm.add_constant(X_t)  # 添加常数项
+    model = sm.OLS(Y_t, X).fit()
+    coefficients = model.params
+    t_values = model.tvalues
+    p_values = model.pvalues
+    r_squared = model.rsquared
+    result_df = pd.DataFrame({'Coefficients': coefficients, 't-values': t_values, 'p-values': p_values ,'r_squared': r_squared})
+    residuals = model.resid
+    dfoutput = adf_test(residuals)
+    return result_df, dfoutput
 
 def johansen_cointegration_test(df, det_order = -1, k_ar_diff = 1):
     """Perform Johansen cointegration test on dataframe df
