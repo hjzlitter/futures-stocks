@@ -96,7 +96,7 @@ def significant(data, label=None):
         window_data = data.iloc[window_start:window_end]
         model = VAR(window_data)
         results = model.fit()
-        if not label.empty:
+        if label:
             cnt = 0
             for j in range(window_start, window_end-1):
                 forcast = results.forecast(data.values[j].reshape(1, -1), steps=1)
