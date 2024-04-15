@@ -55,16 +55,18 @@ fut_list = ['CU9999.XSGE', 'JM9999.XDCE', 'HC9999.XSGE', 'SC9999.XINE', 'TA9999.
 
 
 
-metal = pd.read_csv("stocks/metal.csv")
-metal['Stkcd'] = metal['Stkcd'].astype(str).str.zfill(6)
+# metal = pd.read_csv("stocks/metal.csv")
+# metal['Stkcd'] = metal['Stkcd'].astype(str).str.zfill(6)
 
-coal = pd.read_csv("stocks/coal.csv")
-coal['Stkcd'] = coal['Stkcd'].astype(str).str.zfill(6)
+# coal = pd.read_csv("stocks/coal.csv")
+# coal['Stkcd'] = coal['Stkcd'].astype(str).str.zfill(6)
 
-nonferrous = pd.read_csv("stocks/nonferrous.csv")
-nonferrous['Stkcd'] = nonferrous['Stkcd'].astype(str).str.zfill(6)
+# nonferrous = pd.read_csv("stocks/nonferrous.csv")
+# nonferrous['Stkcd'] = nonferrous['Stkcd'].astype(str).str.zfill(6)
 
-all_stock = pd.concat([metal, coal, nonferrous], axis=0)
+# all_stock = pd.concat([metal, coal, nonferrous], axis=0)
+all_stock = pd.read_csv("stocks/stocks.csv")
+all_stock['Stkcd'] = all_stock['Stkcd'].astype(str).str.zfill(6)
 all_stock.rename(columns={'Trddt': 'date', 'Opnprc': 'open','Loprc':'low', 'Hiprc':'high', 'Clsprc':'close'}, inplace=True)
 all_stock['date'] = pd.to_datetime(all_stock['date'])
 all_stock['open_diff'] = all_stock['open'].diff()
@@ -84,17 +86,17 @@ def fut_read(x):
     fut['high_diff'] = fut['high'].diff()
     fut['low_diff'] = fut['low'].diff()
     fut['close_diff'] = fut['close'].diff()
-    fut = fut[fut.date>='2019-05-01']
+    # fut = fut[fut.date>='2019-05-01']
     return fut
 
 def stock_read(x):
-    dfs = []
+    # dfs = []
     stock_df = []
     stock_codes = pair[x]
     # print(len(stock_codes))
     for code in stock_codes:
         df = all_stock[all_stock["Stkcd"] == code]
-        df = df[df.date>='2019-05-01']
+        # df = df[df.date>='2019-05-01']
         stock_df.append(df)
     return stock_df
 # 注意！有些期货对应的股票没数据。

@@ -1,0 +1,9 @@
+# 期货0
+# 股票0
+# 特征：ChangeRatio
+significant_idx:0
+
+	ChangeRatio_df1	ChangeRatio_df2
+const	0.0007710944984634132	0.004455927804911715
+L1.ChangeRatio_df1	-0.059749792973177986	0.46427533109086866
+L1.ChangeRatio_df2	-0.037263120073031564	-0.3190840739303614

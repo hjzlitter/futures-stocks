@@ -55,38 +55,31 @@ def johansen_cointegration_test(df, det_order = -1, k_ar_diff = 1):
 
 # 根据fut 跟 stock 的df ，以及feature。生成需要的数据
 def data_generator(fut_df, stock_df, feature='close'):
-    # fut = 'CU9999'
-    # stock = '600362'
-    # print(fut, stock)
-    # au = pd.read_csv(f"futures/{fut}.csv")
-    # print(len(au))
-    # au['date'] = pd.to_datetime(au['date'])
-    # au['ChangeRatio'] = au['close'].diff() / au['close'].shift(1) 
-    # au['ChangeRatio'].iloc[0] = 0
-    
-    
-    # au = au[au.date>='2019-05-01']
-    #stock_df = stock_read(fut)
-    # print(len(stock_df[1]))
-    # sig_col = []
-    # for idx, df in enumerate(stock_df):
-    # stock_df['date'] = pd.to_datetime(stock_df['date'])
-    # df = df[df.date>='2019-05-01']
-    # df.rename(columns={"Trddt": "date"}, inplace=True)
-    merged_df = pd.concat([fut_df['date'], stock_df['date']])
-    unique_times = merged_df.drop_duplicates()
-    unique_times[~unique_times.isin(fut_df['date']) | ~unique_times.isin(stock_df['date'])]
-    # p_value_list = []
+    # merged_df = pd.concat([fut_df['date'], stock_df['date']])
+    # unique_times = merged_df.drop_duplicates()
+    # unique_times[~unique_times.isin(fut_df['date']) | ~unique_times.isin(stock_df['date'])]
+    # # p_value_list = []
 
-    unique_times_df1 = set(fut_df['date'])
-    unique_times_df2 = set(stock_df['date'])
-    common_times = list(unique_times_df1.intersection(unique_times_df2))
-    df1_common = fut_df[fut_df['date'].isin(common_times)]
-    df2_common = stock_df[stock_df['date'].isin(common_times)]
-    merged_df = pd.merge(df1_common, df2_common, on='date', suffixes=('_df1', '_df2'))
-    data = merged_df[[f'{feature}_df1', f'{feature}_df2']]
-    label = merged_df['label']
-    return data, label
+    # unique_times_df1 = set(fut_df['date'])
+    # unique_times_df2 = set(stock_df['date'])
+    # common_times = list(unique_times_df1.intersection(unique_times_df2))
+    # df1_common = fut_df[fut_df['date'].isin(common_times)]
+    # df2_common = stock_df[stock_df['date'].isin(common_times)]
+    # merged_df = pd.merge(df1_common, df2_common, on='date', suffixes=('_df1', '_df2'))
+    # data = merged_df[[f'{feature}_df1', f'{feature}_df2']]
+    # label = merged_df['label']
+    data = pd.merge(fut_df, stock_df, how='outer', left_on='date', right_on='date', suffixes=('_df1', '_df2'))
+    for column in data.columns[15:-1]:
+        data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())#.fillna(method='ffill') #.
+        data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())
+        data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())
+        data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())
+        data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())
+    data = data[data.date>='2019-06-01']
+    condition = data['ChangeRatio_df2'] > 0
+    label = np.where(condition, True, data['label'])
+    # print([f'{feature}_df1', f'{feature}_df2'])
+    return data[[f'{feature}_df1', f'{feature}_df2']], label
 
 def significant(data, label=None):
     p_value_list = []
@@ -114,8 +107,17 @@ def significant(data, label=None):
     significant_columns = [[i, arr] for i, arr in enumerate(p_value_list) if all(arr < 0.10)]
     return significant_columns, acc_list
 
+def para(significant_idx, data, label=None):
+    window_size = 30
+    window_start = significant_idx
+    window_end = significant_idx + window_size
+    window_data = data.iloc[window_start:window_end]
+    model = VAR(window_data)
+    results = model.fit()
+
+
 def benefits_show(significant_idx, data, label=None):
-    significant_idx
+    # significant_idx
     window_size = 30
     window_start = significant_idx
     window_end = significant_idx + window_size
