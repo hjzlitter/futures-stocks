@@ -68,7 +68,7 @@ def data_generator(fut_df, stock_df, feature='close'):
     # merged_df = pd.merge(df1_common, df2_common, on='date', suffixes=('_df1', '_df2'))
     # data = merged_df[[f'{feature}_df1', f'{feature}_df2']]
     # label = merged_df['label']
-    data = pd.merge(fut_df, stock_df, how='outer', left_on='date', right_on='date', suffixes=('_df1', '_df2'))
+    data = pd.merge(fut_df, stock_df, how='outer', left_on='date', right_on='date', suffixes=('_Future', '_Stock'))
     for column in data.columns[15:-1]:
         data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())#.fillna(method='ffill') #.
         data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())
@@ -76,10 +76,11 @@ def data_generator(fut_df, stock_df, feature='close'):
         data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())
         data[column] = data[column].fillna(data[column].rolling(window=5, min_periods=1).mean())
     data = data[data.date>='2019-06-01']
-    condition = data['ChangeRatio_df2'] > 0
+    condition = data['ChangeRatio_Stock'] > 0
     label = np.where(condition, True, data['label'])
     # print([f'{feature}_df1', f'{feature}_df2'])
-    return data[[f'{feature}_df1', f'{feature}_df2']], label
+    # print(data.columns)
+    return data[[f'{feature}_Future', f'{feature}_Stock']], label
 
 def significant(data, label=None):
     p_value_list = []
@@ -116,7 +117,7 @@ def para(significant_idx, data, label=None):
     results = model.fit()
 
 
-def benefits_show(significant_idx, data, label=None):
+def benefits_show(significant_idx, data, fut_df, label=None):
     # significant_idx
     window_size = 30
     window_start = significant_idx
@@ -132,25 +133,25 @@ def benefits_show(significant_idx, data, label=None):
         forecast, lower, upper = results.forecast_interval(data.values[j].reshape(1,-1), steps=1, alpha=0.05)
         forcast_list.append(forecast[0][1])
     plt_data = pd.DataFrame({
-        'x': np.linspace(1, window_size-1, window_size-1),
-        'Predict': np.array(forcast_list),
-        'Ground Truth': window_data.iloc[:-1, 1].values,
-        'Future': window_data.iloc[:-1, 0].values
+        'x': fut_df.date[window_start+1:window_end],
+        '601899_Predict': np.array(forcast_list),
+        '601899_Ground Truth': window_data.iloc[:-1, 1].values,
+        'CU_Future': window_data.iloc[:-1, 0].values
     })
 
     # 标准化数据
     scaler = StandardScaler()
-    plt_data[['Predict', 'Ground Truth', 'Future']] = scaler.fit_transform(plt_data[['Predict', 'Ground Truth', 'Future']])
+    plt_data[['601899_Predict', '601899_Ground Truth', 'CU_Future']] = scaler.fit_transform(plt_data[['601899_Predict', '601899_Ground Truth', 'CU_Future']])
 
     # 使用 seaborn 绘图
-    plt.figure(figsize=(10, 6))
-    sns.lineplot(data=plt_data.melt(id_vars=['x'], value_vars=['Predict', 'Ground Truth', 'Future']), 
-                x='x', y='value', hue='variable')
-    plt.title('Standardized Time Series Comparison')
-    plt.xlabel('Time Point')
-    plt.ylabel('Standardized Value')
-    plt.legend(title='Variable')
-    plt.show()
+    fig = plt.figure(figsize=(10, 6), dpi=250)
+    plt_data_melted = plt_data.melt(id_vars=['x'], value_vars=['601899_Predict', '601899_Ground Truth', 'CU_Future'], var_name='Price(Standarded)', value_name='value')
+    sns.lineplot(data=plt_data_melted, x='x', y='value', hue='Price(Standarded)')
+    plt.title('Prediction of 601899 using CU Future')
+    plt.xlabel('Time')
+    plt.ylabel('Standardized Price')
+    plt.legend(title='Price(Standarded)')
+    
     
 
 

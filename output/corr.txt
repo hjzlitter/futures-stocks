@@ -1,0 +1,35 @@
+期货名CU9999.XSGE
+股票名:601899
+                 ChangeRatio_df1  ChangeRatio_df2
+ChangeRatio_df1         1.000000         0.512148
+ChangeRatio_df2         0.512148         1.000000
+
+
+期货名CU9999.XSGE
+股票名:600362
+                 ChangeRatio_df1  ChangeRatio_df2
+ChangeRatio_df1         1.000000         0.601616
+ChangeRatio_df2         0.601616         1.000000
+
+
+期货名CU9999.XSGE
+股票名:000630
+                 ChangeRatio_df1  ChangeRatio_df2
+ChangeRatio_df1         1.000000         0.508356
+ChangeRatio_df2         0.508356         1.000000
+
+
+期货名CU9999.XSGE
+股票名:601168
+                 ChangeRatio_df1  ChangeRatio_df2
+ChangeRatio_df1         1.000000         0.497866
+ChangeRatio_df2         0.497866         1.000000
+
+
+期货名CU9999.XSGE
+股票名:000878
+                 ChangeRatio_df1  ChangeRatio_df2
+ChangeRatio_df1         1.000000         0.569995
+ChangeRatio_df2         0.569995         1.000000
+
+

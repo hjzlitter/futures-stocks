@@ -1,0 +1,50 @@
+# feature: close
+# 期货CU9999.XSGE
+# 股票601899
+significant_idx:0
+
+	close_Future	close_Stock
+const	15813.44	-3.55
+L1.close_Future	0.66	0.0
+L1.close_Stock	34.43	0.78
+
+# feature: close
+# 期货CU9999.XSGE
+# 股票600362
+significant_idx:3
+
+	close_Future	close_Stock
+const	14161.66	-3.21
+L1.close_Future	0.72	0.0
+L1.close_Stock	-75.65	0.71
+
+# feature: close
+# 期货CU9999.XSGE
+# 股票000630
+significant_idx:161
+
+	close_Future	close_Stock
+const	8700.68	0.15
+L1.close_Future	0.95	0.0
+L1.close_Stock	-3012.3	0.79
+
+# feature: close
+# 期货CU9999.XSGE
+# 股票601168
+significant_idx:10
+
+	close_Future	close_Stock
+const	18533.75	2.15
+L1.close_Future	0.64	-0.0
+L1.close_Stock	-250.66	0.93
+
+# feature: close
+# 期货CU9999.XSGE
+# 股票000878
+significant_idx:6
+
+	close_Future	close_Stock
+const	11706.62	-1.15
+L1.close_Future	0.79	0.0
+L1.close_Stock	-158.45	0.72
+

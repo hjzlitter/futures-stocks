@@ -1,0 +1,50 @@
+# feature: ChangeRatio
+# 期货CU9999.XSGE
+# 股票601899
+significant_idx:445
+
+	ChangeRatio_Future	ChangeRatio_Stock
+const	0.01	0.01
+L1.ChangeRatio_Future	-0.56	-1.34
+L1.ChangeRatio_Stock	0.32	0.5
+
+# feature: ChangeRatio
+# 期货CU9999.XSGE
+# 股票600362
+significant_idx:117
+
+	ChangeRatio_Future	ChangeRatio_Stock
+const	0.0	0.01
+L1.ChangeRatio_Future	0.44	1.38
+L1.ChangeRatio_Stock	-0.12	-0.39
+
+# feature: ChangeRatio
+# 期货CU9999.XSGE
+# 股票000630
+significant_idx:241
+
+	ChangeRatio_Future	ChangeRatio_Stock
+const	0.01	0.02
+L1.ChangeRatio_Future	-0.36	-0.94
+L1.ChangeRatio_Stock	-0.09	-0.34
+
+# feature: ChangeRatio
+# 期货CU9999.XSGE
+# 股票601168
+significant_idx:233
+
+	ChangeRatio_Future	ChangeRatio_Stock
+const	0.01	0.01
+L1.ChangeRatio_Future	-0.48	-0.76
+L1.ChangeRatio_Stock	0.18	0.51
+
+# feature: ChangeRatio
+# 期货CU9999.XSGE
+# 股票000878
+significant_idx:1042
+
+	ChangeRatio_Future	ChangeRatio_Stock
+const	-0.0	-0.0
+L1.ChangeRatio_Future	-0.15	0.54
+L1.ChangeRatio_Stock	-0.03	-0.37
+

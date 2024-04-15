@@ -1,0 +1,15 @@
+Results for equation close_Stock_601899
+
+                     coefficient       std. error           t-stat            prob
+----------------------------------------------------------------------------------
+const                   0.083571         0.067922            1.230           0.219
+L1.close_Future        -0.000002         0.000002           -0.898           0.369
+L1.close_Stock          1.003071         0.005587          179.550           0.000
+
+Results for equation ChangeRatio_Stock_601899
+
+                           coefficient       std. error           t-stat            prob
+----------------------------------------------------------------------------------------
+const                         0.001721         0.000762            2.258           0.024
+L1.ChangeRatio_Future        -0.002103         0.080394           -0.026           0.979
+L1.ChangeRatio_Stock          0.032099         0.034008            0.944           0.345
