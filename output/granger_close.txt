@@ -1,0 +1,45 @@
+Granger causality test for CU9999.XSGE:
+Granger causality test for 601899:
+t_value: 7.92
+p_value: 0.0
+
+Granger 因果检验：CU9999.XSGE对 601899有因果关系
+
+
+
+Granger causality test for CU9999.XSGE:
+Granger causality test for 600362:
+t_value: 0.92
+p_value: 0.34
+
+Granger 因果检验：CU9999.XSGE 对 600362 无因果关系
+
+
+
+Granger causality test for CU9999.XSGE:
+Granger causality test for 000630:
+t_value: 1.62
+p_value: 0.2
+
+Granger 因果检验：CU9999.XSGE 对 000630 无因果关系
+
+
+
+Granger causality test for CU9999.XSGE:
+Granger causality test for 601168:
+t_value: 5.99
+p_value: 0.01
+
+Granger 因果检验：CU9999.XSGE对 601168有因果关系
+
+
+
+Granger causality test for CU9999.XSGE:
+Granger causality test for 000878:
+t_value: 0.0
+p_value: 0.95
+
+Granger 因果检验：CU9999.XSGE 对 000878 无因果关系
+
+
+

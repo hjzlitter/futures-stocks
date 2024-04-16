@@ -125,32 +125,35 @@ def benefits_show(significant_idx, data, fut_df, label=None):
     window_data = data.iloc[window_start:window_end]
     model = VAR(window_data)
     results = model.fit()
-    cnt = 0
-    forcast_list = []
-    # conf_int_list = []  # 存储置信区间上下界
-    for j in range(window_start, window_end-1):
-        # forcast = results.forecast(data.values[j].reshape(1, -1), steps=1)
-        forecast, lower, upper = results.forecast_interval(data.values[j].reshape(1,-1), steps=1, alpha=0.05)
-        forcast_list.append(forecast[0][1])
+
+    forecast_list = []
+    for j in range(window_start, window_end - 1):
+        forecast, lower, upper = results.forecast_interval(data.values[j].reshape(1, -1), steps=1, alpha=0.05)
+        forecast_list.append(forecast[0][1])
+
     plt_data = pd.DataFrame({
-        'x': fut_df.date[window_start+1:window_end],
-        '601899_Predict': np.array(forcast_list),
-        '601899_Ground Truth': window_data.iloc[:-1, 1].values,
-        'CU_Future': window_data.iloc[:-1, 0].values
+        'Date': fut_df.date[window_start+1:window_end],
+        'Stock_Predict': np.array(forecast_list),
+        'Stock_Truth': window_data.iloc[:-1, 1].values,
+        'Future_Price': window_data.iloc[:-1, 0].values
     })
 
-    # 标准化数据
+    # Normalize the data
     scaler = StandardScaler()
-    plt_data[['601899_Predict', '601899_Ground Truth', 'CU_Future']] = scaler.fit_transform(plt_data[['601899_Predict', '601899_Ground Truth', 'CU_Future']])
+    plt_data[['Stock_Predict', 'Stock_Truth', 'Future_Price']] = scaler.fit_transform(plt_data[['Stock_Predict', 'Stock_Truth', 'Future_Price']])
 
-    # 使用 seaborn 绘图
-    fig = plt.figure(figsize=(10, 6), dpi=250)
-    plt_data_melted = plt_data.melt(id_vars=['x'], value_vars=['601899_Predict', '601899_Ground Truth', 'CU_Future'], var_name='Price(Standarded)', value_name='value')
-    sns.lineplot(data=plt_data_melted, x='x', y='value', hue='Price(Standarded)')
+    # Plotting
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=250)
+    ax.plot(plt_data['Date'], plt_data['Stock_Truth'], label='601899 Truth', color='#0000FF', linewidth=2) # Standard blue
+    ax.plot(plt_data['Date'], plt_data['Stock_Predict'], label='601899 Predict', linestyle='dashed', color='#3399FF', linewidth=2) # Lighter blue, close to standard blue
+    ax.plot(plt_data['Date'], plt_data['Future_Price'], label='CU Future Price', color='red', linewidth=2)
+
+
     plt.title('Prediction of 601899 using CU Future')
     plt.xlabel('Time')
     plt.ylabel('Standardized Price')
-    plt.legend(title='Price(Standarded)')
+    plt.legend(title='Price (Standardized)')
+
     
     
 
