@@ -8,8 +8,9 @@ import statsmodels.api as sm
 from matplotlib import pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
-from data import pair
+from data import pair, fut_list, fut_read, stock_read
 from sklearn.metrics import r2_score
+
 
 def adf_test(timeseries):
     # print('Results of Augmented Dickey-Fuller Test:')
@@ -119,7 +120,7 @@ def para(significant_idx, data, label=None):
     results = model.fit()
 
 
-def benefits_show(significant_idx, data, fut_df, idx, label=None):
+def benefits_show(significant_idx, data, idx, fut_df, stock_df, feature='close'):
     # significant_idx
     window_size = 30
     window_start = significant_idx
@@ -128,17 +129,37 @@ def benefits_show(significant_idx, data, fut_df, idx, label=None):
     model = VAR(window_data)
     results = model.fit()
     fut_df = fut_df[fut_df.date>='2019-06-01']
+    df = stock_df[idx]
+    df = df[df.date>='2019-06-01']
+    print(len(df))
     forecast_list = []
     for j in range(window_start, window_end - 1):
         forecast, lower, upper = results.forecast_interval(data.values[j].reshape(1, -1), steps=1, alpha=0.05)
         forecast_list.append(forecast[0][0])
-
-    plt_data = pd.DataFrame({
-        'Date': fut_df.date[window_start+1:window_end],
-        'Stock_Predict': np.array(forecast_list),
-        'Stock_Truth': window_data.iloc[1:, 0].values,
-        'Future_Price': window_data.iloc[1:, 1].values
-    })
+    if feature == 'close': 
+        stock_precict = np.array(forecast_list)
+        print_feature = 'Price'
+        plt_data = pd.DataFrame({
+            'Date': fut_df.date[window_start+1:window_end],
+            'Stock_Predict': stock_precict,
+            'Stock_Truth': window_data.iloc[1:, 1].values,
+            'Future_Price': window_data.iloc[1:, 0].values
+        })
+    else:
+        price0 = fut_df.iloc[window_start:window_end-1]['close']
+        stock_precict = np.array(price0) * (1 + np.array(forecast_list))
+        gt = np.array(fut_df.iloc[window_start+1:window_end]['close'])
+        fut = np.array(df.iloc[window_start+1:window_end]['close'])
+ 
+        print_feature = 'Return'
+        plt_data = pd.DataFrame({
+            'Date': fut_df.date[window_start+1:window_end],
+            'Stock_Predict': stock_precict,
+            'Stock_Truth': gt,
+            'Future_Price': fut
+        })
+        
+    
     r_squared = r2_score(plt_data['Stock_Truth'], plt_data['Stock_Predict'])
     # Normalize the data
     scaler = StandardScaler()
@@ -151,10 +172,10 @@ def benefits_show(significant_idx, data, fut_df, idx, label=None):
     ax.plot(plt_data['Date'], plt_data['Future_Price'], label=f'{stock} Price', color='red', linewidth=2)
 
 
-    plt.title(f'Prediction of CU Future using {stock}, R2={r_squared:.2f}')
+    plt.title(f'Prediction of CU Future using {feature} of {stock}, R2={r_squared:.2f}')
     plt.xlabel('Time')
-    plt.ylabel('Standardized Price')
-    plt.legend(title='Price (Standardized)')
+    plt.ylabel(f'Standardized Price')
+    plt.legend(title=f'Price (Standardized)')
     return fig
     
     
