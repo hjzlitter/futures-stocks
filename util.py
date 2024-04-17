@@ -8,6 +8,8 @@ import statsmodels.api as sm
 from matplotlib import pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
+from data import pair
+from sklearn.metrics import r2_score
 
 def adf_test(timeseries):
     # print('Results of Augmented Dickey-Fuller Test:')
@@ -117,7 +119,7 @@ def para(significant_idx, data, label=None):
     results = model.fit()
 
 
-def benefits_show(significant_idx, data, fut_df, label=None):
+def benefits_show(significant_idx, data, fut_df, idx, label=None):
     # significant_idx
     window_size = 30
     window_start = significant_idx
@@ -125,35 +127,35 @@ def benefits_show(significant_idx, data, fut_df, label=None):
     window_data = data.iloc[window_start:window_end]
     model = VAR(window_data)
     results = model.fit()
-
+    fut_df = fut_df[fut_df.date>='2019-06-01']
     forecast_list = []
     for j in range(window_start, window_end - 1):
         forecast, lower, upper = results.forecast_interval(data.values[j].reshape(1, -1), steps=1, alpha=0.05)
-        forecast_list.append(forecast[0][1])
+        forecast_list.append(forecast[0][0])
 
     plt_data = pd.DataFrame({
         'Date': fut_df.date[window_start+1:window_end],
         'Stock_Predict': np.array(forecast_list),
-        'Stock_Truth': window_data.iloc[:-1, 1].values,
-        'Future_Price': window_data.iloc[:-1, 0].values
+        'Stock_Truth': window_data.iloc[1:, 0].values,
+        'Future_Price': window_data.iloc[1:, 1].values
     })
-
+    r_squared = r2_score(plt_data['Stock_Truth'], plt_data['Stock_Predict'])
     # Normalize the data
     scaler = StandardScaler()
     plt_data[['Stock_Predict', 'Stock_Truth', 'Future_Price']] = scaler.fit_transform(plt_data[['Stock_Predict', 'Stock_Truth', 'Future_Price']])
-
+    stock = pair['CU9999.XSGE'][idx]
     # Plotting
     fig, ax = plt.subplots(figsize=(10, 6), dpi=250)
-    ax.plot(plt_data['Date'], plt_data['Stock_Truth'], label='601899 Truth', color='#0000FF', linewidth=2) # Standard blue
-    ax.plot(plt_data['Date'], plt_data['Stock_Predict'], label='601899 Predict', linestyle='dashed', color='#3399FF', linewidth=2) # Lighter blue, close to standard blue
-    ax.plot(plt_data['Date'], plt_data['Future_Price'], label='CU Future Price', color='red', linewidth=2)
+    ax.plot(plt_data['Date'], plt_data['Stock_Truth'], label=f'CU Truth', color='#0000FF', linewidth=2) # Standard blue
+    ax.plot(plt_data['Date'], plt_data['Stock_Predict'], label=f'CU Predict', linestyle='dashed', color='#3399FF', linewidth=2) # Lighter blue, close to standard blue
+    ax.plot(plt_data['Date'], plt_data['Future_Price'], label=f'{stock} Price', color='red', linewidth=2)
 
 
-    plt.title('Prediction of 601899 using CU Future')
+    plt.title(f'Prediction of CU Future using {stock}, R2={r_squared:.2f}')
     plt.xlabel('Time')
     plt.ylabel('Standardized Price')
     plt.legend(title='Price (Standardized)')
-
+    return fig
     
     
 
